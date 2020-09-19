@@ -13,6 +13,7 @@ import {MatButtonToggleModule} from "@angular/material/button-toggle";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {FlexLayoutModule} from "@angular/flex-layout";
 import { MapComponent } from './map/map.component';
+import {MatToolbarModule} from "@angular/material/toolbar";
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { MapComponent } from './map/map.component';
     MatDatepickerModule,
     FlexLayoutModule,
     MatIconModule,
+    MatToolbarModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
