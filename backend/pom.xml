@@ -26,6 +26,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.6</version>
+		</dependency>
+
+		<dependency>
 			<groupId>com.hackzurich</groupId>
 			<artifactId>frontend</artifactId>
 			<version>1.0-SNAPSHOT</version>

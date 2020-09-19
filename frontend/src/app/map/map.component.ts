@@ -13,8 +13,8 @@ export class MapComponent implements OnInit {
 
   // todo need to be updated when scrolling
   coordinates: Coordinates = {
-    long: 46.942969,
-    lat: 7.432527
+    longitude: 46.942969,
+    latitude: 7.432527
   };
   leafleatMap: any;
   readonly leafleatMapId = 'map';
@@ -46,7 +46,7 @@ export class MapComponent implements OnInit {
   }
 
   coordinateToPosition(cooridnate: Coordinates): [number, number] {
-    return [cooridnate.long, cooridnate.lat];
+    return [cooridnate.longitude, cooridnate.latitude];
   }
 
   private initializeMap() {
@@ -74,6 +74,8 @@ export class MapComponent implements OnInit {
     this.scareMapService
       .getScareEvaluations()
       .subscribe(evaluations => evaluations.forEach(evaluation => {
+        console.log(evaluation);
+        console.log(evaluation.coordinates.longitude);
         this.addElements.push(this.generateMarker(evaluation));
       }));
   }
