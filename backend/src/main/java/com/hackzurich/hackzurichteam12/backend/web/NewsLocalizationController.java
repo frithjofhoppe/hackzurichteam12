@@ -13,8 +13,13 @@ public class NewsLocalizationController {
         this.locationRecognizerService = locationRecognizerService;
     }
 
-    @PostMapping
-    public LocationRecognitionResult locateNews(@RequestBody CitySearchDto dto){
-        return locationRecognizerService.findCityCoordinates(dto.getNews());
+    @PostMapping("messages")
+    public LocationRecognitionResult locateNews(@RequestBody CitySearchDto dto) {
+        return locationRecognizerService.findCityCoordinatesByMessage(dto.getNews());
+    }
+
+    @PostMapping("coordinates")
+    public LocationRecognitionResult locatePlace(@RequestBody CitySearchDto dto) {
+        return locationRecognizerService.findCityByCoordinates(dto.getLatitude(), dto.getLongitude());
     }
 }

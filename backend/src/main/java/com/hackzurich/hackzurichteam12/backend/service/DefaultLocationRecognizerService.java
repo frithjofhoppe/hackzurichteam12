@@ -122,7 +122,7 @@ public class DefaultLocationRecognizerService implements LocationRecognizerServi
     }
 
     @Override
-    public LocationRecognitionResult findCityCoordinates(String news) {
+    public LocationRecognitionResult findCityCoordinatesByMessage(String news) {
         var locations = findLocationInNews(news);
 
         for (IBMTextEntity textEntity : locations) {
@@ -132,6 +132,36 @@ public class DefaultLocationRecognizerService implements LocationRecognizerServi
             }
         }
         return null;
+    }
+
+    @Override
+    public LocationRecognitionResult findCityByCoordinates(double latitude, double longitude) {
+        var placeResult = webClientGeocode()
+                .method(HttpMethod.GET)
+                .uri(
+                        "/" + longitude + "," + latitude + ".json?access_token=" + MAPBOX_KEY
+                ).retrieve()
+                .bodyToMono(MapboxPlacesResult.class)
+                .block();
+
+        var place = Arrays.asList(placeResult.getFeatures())
+                .stream()
+                .filter(feature -> feature.getId().contains("place"))
+                .filter(feature -> feature.getPlace_name().contains("Switzerland"))
+                .findFirst();
+
+        var location = place
+                .map(p -> LocationRecognitionResult.builder()
+                        .city(p.getText())
+                        .coordinates(
+                                CoordinatesDto.builder()
+                                        .latitude(latitude)
+                                        .longitude(longitude)
+                                        .build()
+                        ).build()
+                )
+                .orElse(null);
+        return location;
     }
 
     private IBMTextAnalyzeResult analyzeRawNews(String news) {

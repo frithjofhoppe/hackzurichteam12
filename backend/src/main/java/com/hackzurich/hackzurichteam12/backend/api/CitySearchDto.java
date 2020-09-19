@@ -9,4 +9,6 @@ import lombok.*;
 @Builder
 public class CitySearchDto {
     String news;
+    double longitude;
+    double latitude;
 }

@@ -8,6 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class MapboxFeature {
+    String id;
     String text;
     String place_name;
     MapboxGeometry geometry;
