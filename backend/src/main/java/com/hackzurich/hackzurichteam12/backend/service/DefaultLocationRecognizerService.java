@@ -3,17 +3,14 @@ package com.hackzurich.hackzurichteam12.backend.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hackzurich.hackzurichteam12.backend.api.*;
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class DefaultLocationRecognizerService implements LocationRecognizerService {
@@ -76,15 +73,12 @@ public class DefaultLocationRecognizerService implements LocationRecognizerServi
     }
 
     @Override
-    public IBMTextEntity findLocationInNews(String news) {
-        var analyzeResult = analyzeRawNews(news)
+    public List<IBMTextEntity> findLocationInNews(String news) {
+        return analyzeRawNews(news)
                 .getEntities()
                 .stream()
                 .filter(result -> result.getType().contains("Location"))
-                .findFirst()
-                .orElse(null);
-
-        return analyzeResult;
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -98,16 +92,21 @@ public class DefaultLocationRecognizerService implements LocationRecognizerServi
                 .block();
 
         if (result.getFeatures().length > 0) {
-            var feature = result.getFeatures()[0];
-            var coordinates = feature.getGeometry().getCoordinates();
-            return LocationRecognitionResult.builder()
-                    .city(feature.getText())
-                    .coordinates(
-                            CoordinatesDto.builder()
-                                    .longitude(coordinates[1])
-                                    .latitude(coordinates[0])
-                                    .build()
-                    ).build();
+
+            var bestMatchingFeature = result.getFeatures()[0];
+
+            if (bestMatchingFeature.getPlace_name().contains("Switzerland")) {
+
+                var coordinates = bestMatchingFeature.getGeometry().getCoordinates();
+                return LocationRecognitionResult.builder()
+                        .city(bestMatchingFeature.getText())
+                        .coordinates(
+                                CoordinatesDto.builder()
+                                        .longitude(coordinates[1])
+                                        .latitude(coordinates[0])
+                                        .build()
+                        ).build();
+            }
         }
 
         return null;
@@ -115,10 +114,15 @@ public class DefaultLocationRecognizerService implements LocationRecognizerServi
 
     @Override
     public LocationRecognitionResult findCityCoordinates(String news) {
-        var location = findLocationInNews(news);
-        return Optional.ofNullable(location)
-                .map(l -> lookupLocation(location.getText()))
-                .orElse(null);
+        var locations = findLocationInNews(news);
+
+        for (IBMTextEntity textEntity : locations) {
+            var city = lookupLocation(textEntity.getText());
+            if (Objects.nonNull(city)) {
+                return city;
+            }
+        }
+        return null;
     }
 
     private IBMTextAnalyzeResult analyzeRawNews(String news) {

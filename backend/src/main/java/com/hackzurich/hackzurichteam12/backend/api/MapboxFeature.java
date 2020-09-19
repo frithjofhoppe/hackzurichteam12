@@ -9,5 +9,6 @@ import lombok.*;
 @Builder
 public class MapboxFeature {
     String text;
+    String place_name;
     MapboxGeometry geometry;
 }
