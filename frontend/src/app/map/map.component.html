@@ -1,3 +1,28 @@
-<div id="map">
-
+<div fxLayout="column" fxLayoutGap="20px" style="margin: 10px">
+  <div>
+    <mat-accordion>
+        <mat-expansion-panel (opened)="panelOpenState = true"
+                             (closed)="panelOpenState = false">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Filte
+            </mat-panel-title>
+            <mat-panel-description>
+              Filter the map
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <mat-form-field [floatLabel]="'always'">
+            <mat-label>Search Key</mat-label>
+            <input matInput>
+          </mat-form-field>
+        </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+  <mat-card>
+    <mat-card-title>
+      Map
+    </mat-card-title>
+    <div fxflex id="map">
+    </div>
+  </mat-card>
 </div>
