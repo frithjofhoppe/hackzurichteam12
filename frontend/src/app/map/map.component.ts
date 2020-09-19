@@ -21,6 +21,7 @@ export class MapComponent implements OnInit {
   readonly defaultZoom = 13;
   currentZoom = this.defaultZoom;
   addElements: any[] = [];
+  panelOpenState: boolean;
 
   constructor(private scareMapService: ScareMapService) {
   }
