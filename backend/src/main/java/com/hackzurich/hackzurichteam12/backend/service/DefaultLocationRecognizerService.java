@@ -1,10 +1,15 @@
 package com.hackzurich.hackzurichteam12.backend.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hackzurich.hackzurichteam12.backend.api.*;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -26,14 +31,48 @@ public class DefaultLocationRecognizerService implements LocationRecognizerServi
 
     public WebClient webClientGeocode() {
         return WebClient.builder()
-                .baseUrl(IBM_NPL_NRM_API)
+                .baseUrl(MAPBOX_API)
                 .build();
     }
 
     public WebClient webClient() {
         return WebClient.builder()
                 .baseUrl(IBM_NPL_NRM_API)
+                .filters(exchangeFilterFunctions -> {
+                    exchangeFilterFunctions.add(logRequest());
+                    exchangeFilterFunctions.add(logResponse());
+                })
+                .defaultHeaders(header -> header.setBasicAuth("apikey", ACCESS_KEY))
                 .build();
+    }
+
+    ExchangeFilterFunction logRequest() {
+        return ExchangeFilterFunction.ofRequestProcessor(clientRequest -> {
+            StringBuilder sb = new StringBuilder("Request: \n");
+            //append clientRequest method and url
+            System.out.println(clientRequest.url());
+            try {
+                System.out.println(
+                        (new ObjectMapper()).writeValueAsString(clientRequest)
+                );
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+            System.out.println(clientRequest.body().toString());
+            clientRequest
+                    .headers()
+                    .forEach((name, values) -> values.forEach(value -> System.out.println(value)));
+            return Mono.just(clientRequest);
+        });
+    }
+
+    ExchangeFilterFunction logResponse() {
+        return ExchangeFilterFunction.ofResponseProcessor(clientRequest -> {
+            StringBuilder sb = new StringBuilder("Request: \n");
+            //append clientRequest method and url
+            System.out.println(clientRequest);
+            return Mono.just(clientRequest);
+        });
     }
 
     @Override
@@ -42,21 +81,18 @@ public class DefaultLocationRecognizerService implements LocationRecognizerServi
                 .getEntities()
                 .stream()
                 .filter(result -> result.getType().contains("Location"))
-                .findFirst();
+                .findFirst()
+                .orElse(null);
 
-        return null;
+        return analyzeResult;
     }
 
     @Override
-    public LocationRecognitionResult getCoordinatesOfLocation(String location) {
+    public LocationRecognitionResult lookupLocation(String location) {
         var result = webClientGeocode()
                 .method(HttpMethod.GET)
                 .uri(
-                        String.format(
-                                "/%s%20Switzerland.json?access_token=%s",
-                                location,
-                                MAPBOX_KEY
-                        )
+                        "/" + location + "%20Switzerland.json?access_token=" + MAPBOX_KEY
                 ).retrieve()
                 .bodyToMono(MapboxPlacesResult.class)
                 .block();
@@ -77,26 +113,34 @@ public class DefaultLocationRecognizerService implements LocationRecognizerServi
         return null;
     }
 
+    @Override
+    public LocationRecognitionResult findCityCoordinates(String news) {
+        var location = findLocationInNews(news);
+        return Optional.ofNullable(location)
+                .map(l -> lookupLocation(location.getText()))
+                .orElse(null);
+    }
+
     private IBMTextAnalyzeResult analyzeRawNews(String news) {
+
         return webClient()
                 .method(HttpMethod.POST)
                 .uri("/v1/analyze?version=2020-08-01")
-                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
                 .body(
-                        BodyInserters.fromPublisher(
-                                Mono.just(String.format(
-                                        "{\n" +
-                                                "  \"text\": \"%s\",\n" +
-                                                "  \"features\": {\n" +
-                                                "    \"entities\": {\n" +
-                                                "      \"sentiment\": true,\n" +
-                                                "      \"limit\": 1\n" +
-                                                "    }\n" +
-                                                "  }\n" +
-                                                "}",
-                                        news
-                                )), String.class
-                        )
+                        Mono.just(
+                                IBMTextAnalyzeRequest.builder()
+                                        .text(news)
+                                        .features(
+                                                IBMTextFeature.builder()
+                                                        .entities(
+                                                                IBMTextEntityRequest
+                                                                        .builder()
+                                                                        .sentiment(true)
+                                                                        .build()
+                                                        ).build()
+                                        ).build()
+                        ), IBMTextAnalyzeRequest.class
                 ).retrieve()
                 .bodyToMono(IBMTextAnalyzeResult.class)
                 .block();

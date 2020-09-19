@@ -18,7 +18,7 @@ public class DefaultScareEvaluationService implements ScareEvaluationService {
 
     @Override
     public List<ScareEvaluationDto> getEvaluations() {
-        locationRecognizerService.getCoordinatesOfLocation("Zurich");
+        locationRecognizerService.lookupLocation("Zurich");
         return Stream.of(
                 ScareEvaluationDto.builder()
                         .areaName("Bern")
