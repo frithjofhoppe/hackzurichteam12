@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import * as leaflet from 'leaflet';
 import {ScareMapService} from "../api/scare-map.service";
 import {scan, tap} from "rxjs/operators";
-import {Coordinates, ScareEvaluation} from "../api/api.model";
+import {Coordinates, ScareEvaluation, ScareLevel} from "../api/api.model";
 
 @Component({
   selector: 'app-map',
@@ -16,7 +16,6 @@ export class MapComponent implements OnInit {
     long: 46.942969,
     lat: 7.432527
   };
-
   leafleatMap: any;
   readonly leafleatMapId = 'map';
   readonly defaultZoom = 13;
@@ -28,22 +27,28 @@ export class MapComponent implements OnInit {
 
   ngOnInit(): void {
 
+    // Select current location
     this.leafleatMap = leaflet
       .map(this.leafleatMapId)
       .setView(this.coordinateToPosition(this.coordinates), this.defaultZoom);
 
-    this.leafleatMap.on('zoomanim', event => {
-      this.currentZoom = event.zoom
-      this.addElements.forEach(element => element.remove())
-      this.insertNewMarkers();
-    });
-
+    this.startZoomEventListener();
     this.insertNewMarkers();
 
+    // Add marker to current position
     leaflet
       .marker(this.coordinateToPosition(this.coordinates))
       .addTo(this.leafleatMap);
 
+    this.initializeMap();
+
+  }
+
+  coordinateToPosition(cooridnate: Coordinates): [number, number] {
+    return [cooridnate.long, cooridnate.lat];
+  }
+
+  private initializeMap() {
     leaflet.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
       maxZoom: 18,
       attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
@@ -53,11 +58,14 @@ export class MapComponent implements OnInit {
       tileSize: 512,
       zoomOffset: -1
     }).addTo(this.leafleatMap);
-
   }
 
-  coordinateToPosition(cooridnate: Coordinates): [number, number] {
-    return [cooridnate.long, cooridnate.lat];
+  private startZoomEventListener() {
+    this.leafleatMap.on('zoomanim', event => {
+      this.currentZoom = event.zoom
+      this.addElements.forEach(element => element.remove())
+      this.insertNewMarkers();
+    });
   }
 
   private insertNewMarkers() {
@@ -70,17 +78,18 @@ export class MapComponent implements OnInit {
 
   private generateMarker(evaluation: ScareEvaluation) {
     const circle = leaflet.circle(this.coordinateToPosition(evaluation.coordinates), {
-      color: 'red',
-      fillColor: '#f03',
+      color: this.getScareLevel(evaluation).color,
+      fillColor: this.getScareLevel(evaluation).color,
       fillOpacity: 0.5,
-      radius: this.getScareLevel(evaluation)
+      radius: this.getScareLevel(evaluation).radius
     }).addTo(this.leafleatMap);
     circle.bindPopup(`${evaluation.numberOfArticles} articles`);
     return circle;
   }
 
-  private getScareLevel(evaluation: ScareEvaluation) {
+  private getScareLevel(evaluation: ScareEvaluation): ScareLevel {
     let radius;
+    let color;
     if (this.currentZoom <= 8) {
       radius = 3000;
     } else if (this.currentZoom <= 10) {
@@ -93,6 +102,17 @@ export class MapComponent implements OnInit {
       radius = 300;
     }
 
-    return radius * (evaluation.numberOfArticles / 60)
+    if (evaluation.numberOfArticles >= 100) {
+      color = 'red'
+    } else if (evaluation.numberOfArticles >= 20) {
+      color = 'orange'
+    } else {
+      color = 'green';
+    }
+
+    return {
+      color: color,
+      radius: radius *  (evaluation.numberOfArticles / 60)
+    } as ScareLevel;
   }
 }

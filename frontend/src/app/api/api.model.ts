@@ -16,3 +16,8 @@ export interface MapClick {
     lng: number
   }
 }
+
+export interface ScareLevel {
+  radius: number;
+  color: string;
+}
