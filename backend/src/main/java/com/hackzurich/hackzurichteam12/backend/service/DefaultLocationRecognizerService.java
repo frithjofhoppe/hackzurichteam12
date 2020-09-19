@@ -1,7 +1,6 @@
 package com.hackzurich.hackzurichteam12.backend.service;
 
-import com.hackzurich.hackzurichteam12.backend.api.LocationRecognitionResult;
-import com.hackzurich.hackzurichteam12.backend.api.LocationRecognizerService;
+import com.hackzurich.hackzurichteam12.backend.api.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -30,8 +29,18 @@ public class DefaultLocationRecognizerService implements LocationRecognizerServi
 
 
     @Override
-    public LocationRecognitionResult findLocationInMessage(String message) {
-        var response = web
+    public LocationRecognitionResult findLocationInNews(String news) {
+        var analyzeResult = analyzeRawNews(news)
+                .getEntities()
+                .stream()
+                .filter(result -> result.getType().contains("Location"))
+                .findFirst();
+
+        return null;
+    }
+
+    private IBMTextAnalyzeResult analyzeRawNews(String news) {
+        return web
                 .method(HttpMethod.POST)
                 .uri("/v1/analyze?version=2020-08-01")
                 .accept(MediaType.APPLICATION_JSON)
@@ -47,11 +56,12 @@ public class DefaultLocationRecognizerService implements LocationRecognizerServi
                                                 "    }\n" +
                                                 "  }\n" +
                                                 "}",
-                                        message
+                                        news
                                 )), String.class
                         )
                 ).retrieve()
-                .bodyToMono();
+                .bodyToMono(IBMTextAnalyzeResult.class)
+                .block();
     }
 
 }
