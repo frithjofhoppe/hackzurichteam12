@@ -41,6 +41,7 @@ import {MatInputModule} from "@angular/material/input";
     MatExpansionModule,
     MatFormFieldModule,
     MatInputModule,
+    MatTooltipModule
   ],
   providers: [],
   bootstrap: [AppComponent]
