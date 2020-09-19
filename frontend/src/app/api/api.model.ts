@@ -6,8 +6,8 @@ export interface ScareEvaluation {
 }
 
 export interface Coordinates {
-  long: number;
-  lat: number;
+  longitude: number;
+  latitude: number;
 }
 
 export interface MapClick {
