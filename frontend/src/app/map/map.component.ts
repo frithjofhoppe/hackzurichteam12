@@ -34,6 +34,11 @@ export class MapComponent implements OnInit {
       .setView(this.coordinateToPosition(this.coordinates), this.defaultZoom);
 
     this.startZoomEventListener();
+    this.leafleatMap.on('moveend', e => {
+
+      console.log(this.leafleatMap.getCenter());
+      console.log(this.leafleatMap.getBounds());
+    });
     this.insertNewMarkers();
 
     // Add marker to current position
@@ -116,7 +121,7 @@ export class MapComponent implements OnInit {
 
     return {
       color: color,
-      radius: radius *  (evaluation.numberOfArticles / 60)
+      radius: radius * (evaluation.numberOfArticles / 60)
     } as ScareLevel;
   }
 }
