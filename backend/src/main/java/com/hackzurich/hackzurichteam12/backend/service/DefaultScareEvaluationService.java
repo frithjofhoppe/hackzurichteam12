@@ -9,8 +9,16 @@ import java.util.stream.Stream;
 
 @Service
 public class DefaultScareEvaluationService implements ScareEvaluationService {
+
+    private final LocationRecognizerService locationRecognizerService;
+
+    public DefaultScareEvaluationService(LocationRecognizerService locationRecognizerService) {
+        this.locationRecognizerService = locationRecognizerService;
+    }
+
     @Override
     public List<ScareEvaluationDto> getEvaluations() {
+        locationRecognizerService.getCoordinatesOfLocation("Zurich");
         return Stream.of(
                 ScareEvaluationDto.builder()
                         .areaName("Bern")

@@ -1,5 +1,7 @@
 package com.hackzurich.hackzurichteam12.backend.api;
 
 public interface LocationRecognizerService {
-    LocationRecognitionResult findLocationInNews(String message);
+    IBMTextEntity findLocationInNews(String message);
+
+    LocationRecognitionResult getCoordinatesOfLocation(String location);
 }
