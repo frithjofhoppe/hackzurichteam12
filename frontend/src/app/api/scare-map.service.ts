@@ -8,6 +8,9 @@ import {ScareEvaluation} from "./api.model";
 })
 export class ScareMapService {
 
+  readonly baseUrl = '';
+
+
   constructor(
     private http: HttpClient
   ) {
@@ -15,6 +18,10 @@ export class ScareMapService {
   }
 
   getScareEvaluations(): Observable<ScareEvaluation[]> {
+    //Replace with real date
+    //return this.http.get<ScareEvaluation[]>(this.baseUrl);
+
+    // todo remove mock data if api is ready
     return of([
       {
         coordinates: {
