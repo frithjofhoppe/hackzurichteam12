@@ -63,6 +63,17 @@ public class DefaultScareEvaluationService implements ScareEvaluationService {
                                         .longitude(46.754203)
                                         .build()
                         )
+                        .build(),
+                ScareEvaluationDto.builder()
+                        .areaName("Basel")
+                        .numberOfArticles(70)
+                        .areaPopulation(0)
+                        .coordinates(
+                                CoordinatesDto.builder()
+                                        .latitude(7.59111)
+                                        .longitude(47.55056)
+                                        .build()
+                        )
                         .build()
         ).collect(Collectors.toList());
     }

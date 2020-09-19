@@ -15,11 +15,20 @@ import java.util.stream.Collectors;
 @Service
 public class DefaultLocationRecognizerService implements LocationRecognizerService {
 
+    //frithjof.hoppe@gmail.com
     private static final String IBM_NPL_NRM_API = "https://api.eu-de.natural-language-understanding.watson.cloud.ibm.com/instances/71edc145-e0e7-443d-8f79-62322b0ddd37";
     private static final String ACCESS_KEY = "bZVfLE_1CbmP7ssWjS5wAldEagNCnP02P9TtELjKQdew";
 
+    // frithjof.hoppe@hotmail.ch
+    private static final String IBM_NPL_NRM_API_2 = "https://api.eu-gb.natural-language-understanding.watson.cloud.ibm.com/instances/93b50386-2855-47e5-9178-ee8bf15cc036";
+    private static final String ACCESS_KEY_2 = "YHVQL6m8iwgzUH-vd6-9d8EUNHIHfyOFaBpnVdRa3poa";
+
+
     private static final String MAPBOX_API = "https://api.mapbox.com/geocoding/v5/mapbox.places";
+    // frithjof.hoppe@gmail.com
     private static final String MAPBOX_KEY = "pk.eyJ1IjoiZnJpdGhqb2Zob3BwZSIsImEiOiJja2Y5NzhiOWMwYnhqMndvNWo0Mjd6dmxiIn0.nusdy9-fGkx4Al2H-ct4GQ";
+    // frithjof.hoppe@hotmail.ch
+    private static final String MAPBOX_KEY_2 = "pk.eyJ1IjoiZnJpdGhqb2Zob3BwZWhvdG1haWwiLCJhIjoiY2tmYTY2bXQzMHN2ODJzbGMzaXlkYzg4biJ9.z6VOVgsUIzyvu-X1WhzyPQ";
 
 
     public DefaultLocationRecognizerService() {
