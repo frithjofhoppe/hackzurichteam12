@@ -32,6 +32,15 @@ export class ScareMapService {
         },
         areaName: 'Zollikofen',
         numberOfArticles: 60
+      } as ScareEvaluation,
+
+      {
+        coordinates: {
+          lat: 8.530951,
+          long:  47.381011
+        },
+        areaName: 'Zürich',
+        numberOfArticles: 300
       } as ScareEvaluation
     ])
   }
