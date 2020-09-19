@@ -9,8 +9,16 @@ import java.util.stream.Stream;
 
 @Service
 public class DefaultScareEvaluationService implements ScareEvaluationService {
+
+    private final LocationRecognizerService locationRecognizerService;
+
+    public DefaultScareEvaluationService(LocationRecognizerService locationRecognizerService) {
+        this.locationRecognizerService = locationRecognizerService;
+    }
+
     @Override
     public List<ScareEvaluationDto> getEvaluations() {
+        locationRecognizerService.lookupLocation("Zurich");
         return Stream.of(
                 ScareEvaluationDto.builder()
                         .areaName("Bern")
@@ -53,6 +61,17 @@ public class DefaultScareEvaluationService implements ScareEvaluationService {
                                 CoordinatesDto.builder()
                                         .latitude(7.615548)
                                         .longitude(46.754203)
+                                        .build()
+                        )
+                        .build(),
+                ScareEvaluationDto.builder()
+                        .areaName("Basel")
+                        .numberOfArticles(70)
+                        .areaPopulation(0)
+                        .coordinates(
+                                CoordinatesDto.builder()
+                                        .latitude(7.59111)
+                                        .longitude(47.55056)
                                         .build()
                         )
                         .build()
