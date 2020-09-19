@@ -18,6 +18,7 @@ import {MatCardModule} from "@angular/material/card";
 import {MatExpansionModule} from "@angular/material/expansion";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
+import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import {MatInputModule} from "@angular/material/input";
     MatExpansionModule,
     MatFormFieldModule,
     MatInputModule,
-    MatTooltipModule
+    MatTooltipModule,
+    FontAwesomeModule
   ],
   providers: [],
   bootstrap: [AppComponent]
