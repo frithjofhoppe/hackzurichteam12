@@ -1,10 +1,10 @@
 import {NgModule} from '@angular/core';
 import {Routes, RouterModule} from '@angular/router';
-import {HomeComponent} from "./home/home.component";
+import {MapComponent} from "./map/map.component";
 
 const routes: Routes = [
-  {component: HomeComponent, path: 'home'},
-  {path: '**', redirectTo: '/home'}
+  {component: MapComponent, path: 'map'},
+  {path: '**', redirectTo: '/map'}
 ];
 
 @NgModule({
