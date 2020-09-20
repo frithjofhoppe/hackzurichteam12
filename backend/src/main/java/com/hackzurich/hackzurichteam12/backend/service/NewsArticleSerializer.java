@@ -37,8 +37,12 @@ public class NewsArticleSerializer {
                 deserializer.open(new InputStreamReader(new FileInputStream(file)));
                 int failcount = 0;
                 while (deserializer.hasNext()) {
-                    result.add(deserializer.next());
-                    System.out.println("Parsed successfully");
+                    try {
+                        result.add(deserializer.next());
+                        System.out.println("Parsed successfully");
+                    } catch (Exception e) {
+                        continue;
+                    }
                 }
             System.out.println("Parsing failed "+ failcount + "times");
 

@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
-@Transactional
 public class NewsArticleService {
     private final LocationRecognizerService locationRecognizerService;
     private final  NewsArticleRepository articleRepository;
@@ -48,9 +47,8 @@ public class NewsArticleService {
                     rawNewsArticle.getLanguage(),
                     locationEntity);
 
-            return articleRepository.save(article);
+            return articleRepository.saveAndFlush(article);
         }).filter(Objects::nonNull).collect(Collectors.toList());
-        articleRepository.flush();
         return newsArticles;
     }
 
