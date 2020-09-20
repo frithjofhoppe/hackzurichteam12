@@ -20,7 +20,8 @@ public class ScareEvaluationController {
         return scareEvaluationService.getEvaluations();
     }
 
-    @GetMapping("test")
-    public void nothing() {
+    @PostMapping
+    public List<ScareEvaluationDto> searchScareMap(@RequestBody ScareMapSearchDto searchDto) {
+        return scareEvaluationService.searchInScareMap(searchDto);
     }
 }
