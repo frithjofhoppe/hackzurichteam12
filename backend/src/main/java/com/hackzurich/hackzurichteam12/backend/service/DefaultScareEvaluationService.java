@@ -18,7 +18,7 @@ public class DefaultScareEvaluationService implements ScareEvaluationService {
 
     @Override
     public List<ScareEvaluationDto> getEvaluations() {
-        locationRecognizerService.lookupLocation("Zurich");
+        // todo real implementation
         return Stream.of(
                 ScareEvaluationDto.builder()
                         .areaName("Bern")
@@ -76,5 +76,11 @@ public class DefaultScareEvaluationService implements ScareEvaluationService {
                         )
                         .build()
         ).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ScareEvaluationDto> searchInScareMap(ScareMapSearchDto searchDto) {
+        // todo real implementation
+        return null;
     }
 }

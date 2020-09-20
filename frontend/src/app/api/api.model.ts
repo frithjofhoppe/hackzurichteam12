@@ -21,3 +21,9 @@ export interface ScareLevel {
   radius: number;
   color: string;
 }
+
+export interface ScareMapSearch {
+  southWest: Coordinates;
+  northEast: Coordinates;
+  city: string;
+}

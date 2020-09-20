@@ -8,4 +8,11 @@ public interface ScareEvaluationService {
      * @return
      */
     public List<ScareEvaluationDto> getEvaluations();
+
+    /**
+     * Searches in the scare map after geographic limitation and city
+     * @param searchDto
+     * @return
+     */
+    public List<ScareEvaluationDto> searchInScareMap(ScareMapSearchDto searchDto);
 }
