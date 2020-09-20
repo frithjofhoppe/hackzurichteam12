@@ -7,7 +7,7 @@ whereat the information are load dynamically on moving across the map.
 The followin api / services where crucial for analyzing the corona news data and display them properly
 - *[LeafLet](https://leafletjs.com/)*: Animates the amount of corona cases per region
 - *[MapBox API](https://docs.mapbox.com/api/search/)*: Generates the corona map and allows to lookup location (in this case cities)
-- *[IBM Cloud Service (NLP Model) API]*(https://www.ibm.com/cloud/watson-natural-language-understanding) Extracts the location out of the news message
+- *[IBM Cloud Service (NLU Model) API](https://www.ibm.com/cloud/watson-natural-language-understanding)* Extracts the location out of the news message
 
 ## Technology Stack
 - *[Angular](https://angular.io/)* Main frontend library ( used to build the webpage => SPA)
