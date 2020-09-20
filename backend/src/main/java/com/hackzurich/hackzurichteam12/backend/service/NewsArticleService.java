@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -31,6 +32,9 @@ public class NewsArticleService {
         final List<NewsArticle> newsArticles = articleStream.filter(RawNewsArticle::containsCorona).map(rawNewsArticle -> {
             final LocationRecognitionResult location =
                     locationRecognizerService.findCityCoordinatesByMessage(rawNewsArticle.getTextStructureJson());
+            if(location == null) {
+                return null;
+            }
             LocationEntity locationEntity = null;
             if(locationRepository.existsByLongitudeAndLatitude(location.getCoordinates().getLongitude(),location.getCoordinates().getLatitude())){
                 locationEntity = locationRepository.findFirstByLongitudeAndLatitude(location.getCoordinates().getLongitude(),location.getCoordinates().getLatitude());
@@ -45,7 +49,7 @@ public class NewsArticleService {
                     locationEntity);
 
             return articleRepository.save(article);
-        }).collect(Collectors.toList());
+        }).filter(Objects::nonNull).collect(Collectors.toList());
         articleRepository.flush();
         return newsArticles;
     }

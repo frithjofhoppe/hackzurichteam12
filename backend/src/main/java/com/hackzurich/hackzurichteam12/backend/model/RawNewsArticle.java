@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsefa.csv.annotation.CsvDataType;
 import net.sf.jsefa.csv.annotation.CsvField;
+import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -27,9 +28,9 @@ public class RawNewsArticle {
     private String sourceAbbrivation;
     @CsvField(pos = 1)
     private String sourceText;
-    @CsvField(pos = 2, format = "yyyy-MM-dd hh:mm")
+    @CsvField(pos = 2, format = "yyyy-MM-dd'T'hh:mm:ss")
     private Date publicationDate;
-    @CsvField(pos = 3, noValue = "de", required = true)
+    @CsvField(pos = 3, noValue = "de")
     private String language;
     @CsvField(pos = 4)
     private long characterLenght;
@@ -47,10 +48,13 @@ public class RawNewsArticle {
     private String textStructureJson;
 
     public boolean containsCorona() {
+        if(language == null) {
+            this.language = "de";
+        }
         if(language.equalsIgnoreCase("de") || language.equalsIgnoreCase("en")){
             String filename = "viruswordlist."+language+".txt";
             try {
-                List<String> result = Files.readAllLines(Paths.get(filename));
+                List<String> result = Files.readAllLines(new ClassPathResource(filename).getFile().toPath());
                 return result.stream().anyMatch(keyword -> textStructureJson.toLowerCase().contains(keyword));
             } catch (IOException e) {
                 log.error("Unable to read virus wordlist", e);

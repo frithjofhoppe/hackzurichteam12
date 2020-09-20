@@ -25,22 +25,24 @@ public class NewsArticleSerializer {
 
     {
         final CsvConfiguration csvConfiguration = new CsvConfiguration();
-        csvConfiguration.setFieldDelimiter(',');
-        deserializer = CsvIOFactory.createFactory(csvConfiguration, RawNewsArticle.class).createDeserializer();
+       csvConfiguration.setEscapeCharacter('\'');
+       csvConfiguration.setFieldDelimiter(',');
+       csvConfiguration.setQuoteCharacter('"');
+        deserializer = CsvIOFactory.createFactory(csvConfiguration,RawNewsArticle.class).createDeserializer();
     }
 
     public List<RawNewsArticle> readNewsArticlesFromFile(File file) {
         List<RawNewsArticle> result = new ArrayList<>();
         try {
                 deserializer.open(new InputStreamReader(new FileInputStream(file)));
-                while (deserializer.hasNext()){
-                    try {
-                        result.add(deserializer.next());
-                    } catch (Exception e) {
-                        continue;
-                    }
+                int failcount = 0;
+                while (deserializer.hasNext()) {
+                    result.add(deserializer.next());
+                    System.out.println("Parsed successfully");
                 }
-            } catch (FileNotFoundException e) {
+            System.out.println("Parsing failed "+ failcount + "times");
+
+        } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
         return result;
