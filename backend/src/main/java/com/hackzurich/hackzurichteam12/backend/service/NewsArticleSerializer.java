@@ -3,6 +3,8 @@ package com.hackzurich.hackzurichteam12.backend.service;
 import com.hackzurich.hackzurichteam12.backend.model.RawNewsArticle;
 import net.sf.jsefa.Deserializer;
 import net.sf.jsefa.csv.CsvIOFactory;
+import net.sf.jsefa.csv.config.CsvConfiguration;
+import net.sf.jsefa.csv.lowlevel.config.QuoteMode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
@@ -19,14 +21,24 @@ import java.util.stream.Stream;
 @Service
 public class NewsArticleSerializer {
 
-    Deserializer deserializer = CsvIOFactory.createFactory(RawNewsArticle.class).createDeserializer();
+    Deserializer deserializer;
+
+    {
+        final CsvConfiguration csvConfiguration = new CsvConfiguration();
+        System.out.println(csvConfiguration.getLineBreak());
+        deserializer = CsvIOFactory.createFactory(csvConfiguration, RawNewsArticle.class).createDeserializer();
+    }
 
     public List<RawNewsArticle> readNewsArticlesFromFile(File file) {
         List<RawNewsArticle> result = new ArrayList<>();
         try {
                 deserializer.open(new InputStreamReader(new FileInputStream(file)));
                 while (deserializer.hasNext()){
-                    result.add(deserializer.next());
+                    try {
+                        result.add(deserializer.next());
+                    } catch (Exception e) {
+                        continue;
+                    }
                 }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();

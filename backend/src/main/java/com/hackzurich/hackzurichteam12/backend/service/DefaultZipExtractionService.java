@@ -1,5 +1,6 @@
 package com.hackzurich.hackzurichteam12.backend.service;
 
+import com.hackzurich.hackzurichteam12.backend.api.ZipExtractionService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -10,11 +11,12 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 @Service
-public class DefaultZipExtractionService {
+public class DefaultZipExtractionService implements ZipExtractionService {
 
-    @Value("${ch.hackzurich.unzippedTargetPath}")
+    @Value("${coronascare.unzippedTargetPath}")
     public String targetPath;
 
+    @Override
     public List<File> readZip(String zippath) throws IOException {
         List<File> extractedCsvFiles = new ArrayList<>();
         File destDir = new File(targetPath);

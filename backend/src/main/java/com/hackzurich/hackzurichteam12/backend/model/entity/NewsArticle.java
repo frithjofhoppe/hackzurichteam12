@@ -10,6 +10,8 @@ import org.hibernate.annotations.ManyToAny;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -29,13 +31,12 @@ public class NewsArticle {
 
     private String sourceText;
 
-    private LocalDate publicationDate;
+    private Date publicationDate;
 
     @Lob
     private String jsonText;
 
     private String language;
-
 
     @ManyToOne
     LocationEntity location;

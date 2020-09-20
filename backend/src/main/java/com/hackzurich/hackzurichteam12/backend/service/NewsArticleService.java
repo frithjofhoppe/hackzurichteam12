@@ -17,9 +17,15 @@ import java.util.stream.Stream;
 @Service
 @Transactional
 public class NewsArticleService {
-    private LocationRecognizerService locationRecognizerService;
-    private NewsArticleRepository articleRepository;
-    private LocationRepository locationRepository;
+    private final LocationRecognizerService locationRecognizerService;
+    private final  NewsArticleRepository articleRepository;
+    private final LocationRepository locationRepository;
+
+    public NewsArticleService(LocationRecognizerService locationRecognizerService, NewsArticleRepository articleRepository, LocationRepository locationRepository) {
+        this.locationRecognizerService = locationRecognizerService;
+        this.articleRepository = articleRepository;
+        this.locationRepository = locationRepository;
+    }
 
     public List<NewsArticle> filterEnrichAndPerist(Stream<RawNewsArticle> articleStream) {
         final List<NewsArticle> newsArticles = articleStream.filter(RawNewsArticle::containsCorona).map(rawNewsArticle -> {
