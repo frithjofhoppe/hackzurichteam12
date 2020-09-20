@@ -1,8 +1,8 @@
 # (#12 SRF CORONA SCARE APPLICATION Challenge) Corona Scare Map
+![](https://www.hackzurich.com/media/pages/home/1095645988-1599065131/hack-kv2-1400x.jpg)
 ## Our Approach
 To present the corona information in an intuitive and simple way, we use circles with different size and colors (depending on the amount of articles),
 whereat the information are load dynamically on moving across the map.
-![](https://www.hackzurich.com/media/pages/home/1095645988-1599065131/hack-kv2-1400x.jpg)
 ## Used API / Services
 The followin api / services where crucial for analyzing the corona news data and display them properly
 - *[LeafLet](https://leafletjs.com/)*: Animates the amount of corona cases per region
