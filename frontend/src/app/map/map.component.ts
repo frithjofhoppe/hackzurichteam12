@@ -91,7 +91,31 @@ export class MapComponent implements OnInit {
     });
   }
 
+  private getCurrentSearchSpace(): ScareMapSearch {
+    var bounds = this.leafleatMap.getBounds()
+    let searchMap = {
+      northEast: {
+        longitude: bounds._northEast.lng,
+        latitude: bounds._northEast.lat
+      } as Coordinates,
+      southWest: {
+        latitude: bounds._southWest.lat,
+        longitude: bounds._southWest.lng
+      } as Coordinates
+    } as ScareMapSearch;
+    return searchMap;
+  }
+
   private insertNewMarkers() {
+
+    // this.scareMapService
+    //   .searchInScareMap(this.getCurrentSearchSpace())
+    //   .subscribe(evaluations => evaluations.forEach(evaluation => {
+    //     console.log(evaluation);
+    //     console.log(evaluation.coordinates.longitude);
+    //     this.addElements.push(this.generateMarker(evaluation));
+    //   }));
+
     this.scareMapService
       .getScareEvaluations()
       .subscribe(evaluations => evaluations.forEach(evaluation => {
@@ -137,7 +161,7 @@ export class MapComponent implements OnInit {
 
     return {
       color: color,
-      radius: radius * (evaluation.numberOfArticles / 60)
+      radius: radius * (evaluation.numberOfArticles * 3)
     } as ScareLevel;
   }
 }
