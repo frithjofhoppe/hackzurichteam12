@@ -3,6 +3,7 @@ package com.hackzurich.hackzurichteam12.backend.model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.jsefa.csv.annotation.CsvDataType;
 import net.sf.jsefa.csv.annotation.CsvField;
 
@@ -16,6 +17,7 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
+@Slf4j
 public class RawNewsArticle {
     @CsvField(pos = 0)
     private String sourceAbbrivation;
@@ -40,11 +42,15 @@ public class RawNewsArticle {
     @CsvField(pos = 10)
     private String textStructureJson;
 
-    public boolean containsCorona() throws IOException {
+    public boolean containsCorona() {
         if(language.equalsIgnoreCase("de") || language.equalsIgnoreCase("en")){
             String filename = "viruswordlist."+language+".txt";
-            List<String> result = Files.readAllLines(Paths.get(filename));
-            return result.stream().anyMatch(keyword -> textStructureJson.toLowerCase().contains(keyword));
+            try {
+                List<String> result = Files.readAllLines(Paths.get(filename));
+                return result.stream().anyMatch(keyword -> textStructureJson.toLowerCase().contains(keyword));
+            } catch (IOException e) {
+                log.error("Unable to read virus wordlist", e);
+            }
         }
         return false;
     }
