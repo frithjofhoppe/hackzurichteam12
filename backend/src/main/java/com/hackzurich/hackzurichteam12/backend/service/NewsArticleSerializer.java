@@ -25,7 +25,7 @@ public class NewsArticleSerializer {
 
     {
         final CsvConfiguration csvConfiguration = new CsvConfiguration();
-        System.out.println(csvConfiguration.getLineBreak());
+        csvConfiguration.setFieldDelimiter(',');
         deserializer = CsvIOFactory.createFactory(csvConfiguration, RawNewsArticle.class).createDeserializer();
     }
 
