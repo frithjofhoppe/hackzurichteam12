@@ -1,4 +1,4 @@
-# (#SRF Challenge) Corona Scare Map
+# (#12 SRF CORONA SCARE APPLICATION Challenge) Corona Scare Map
 ## Our Approach
 To present the corona information in an intuitive and simple way, we use circles with different size and colors (depending on the amount of articles),
 whereat the information are load dynamically on moving across the map.
