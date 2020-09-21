@@ -5,16 +5,25 @@
                              (closed)="panelOpenState = false">
           <mat-expansion-panel-header>
             <mat-panel-title>
-              Filter
+              <i class="fas fa-map-marker-alt fa-lg"></i> Location
             </mat-panel-title>
             <mat-panel-description>
-              Filter the map
+              You can filter the map
             </mat-panel-description>
           </mat-expansion-panel-header>
-          <mat-form-field [floatLabel]="'always'">
-            <mat-label>Search Key</mat-label>
-            <input matInput>
-          </mat-form-field>
+         <div fxLayout="row" fxLayoutGap="10px">
+           <mat-form-field [floatLabel]="'always'">
+             <mat-label>City</mat-label>
+             <input matInput>
+           </mat-form-field>
+           <mat-form-field [floatLabel]="'always'">
+             <mat-label>Whatsoever</mat-label>
+             <input matInput>
+           </mat-form-field>
+          <div>
+            <button mat-raised-button>Search</button>
+          </div>
+         </div>
         </mat-expansion-panel>
     </mat-accordion>
   </div>

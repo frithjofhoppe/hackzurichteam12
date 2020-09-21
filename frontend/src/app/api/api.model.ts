@@ -6,8 +6,8 @@ export interface ScareEvaluation {
 }
 
 export interface Coordinates {
-  long: number;
-  lat: number;
+  longitude: number;
+  latitude: number;
 }
 
 export interface MapClick {
@@ -20,4 +20,10 @@ export interface MapClick {
 export interface ScareLevel {
   radius: number;
   color: string;
+}
+
+export interface ScareMapSearch {
+  southWest: Coordinates;
+  northEast: Coordinates;
+  city: string;
 }

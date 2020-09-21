@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import * as leaflet from 'leaflet';
 import {ScareMapService} from "../api/scare-map.service";
 import {scan, tap} from "rxjs/operators";
-import {Coordinates, ScareEvaluation, ScareLevel} from "../api/api.model";
+import {Coordinates, ScareMapSearch, ScareEvaluation, ScareLevel} from "../api/api.model";
 
 @Component({
   selector: 'app-map',
@@ -13,8 +13,8 @@ export class MapComponent implements OnInit {
 
   // todo need to be updated when scrolling
   coordinates: Coordinates = {
-    long: 46.942969,
-    lat: 7.432527
+    longitude: 46.942969,
+    latitude: 7.432527
   };
   leafleatMap: any;
   readonly leafleatMapId = 'map';
@@ -34,6 +34,7 @@ export class MapComponent implements OnInit {
       .setView(this.coordinateToPosition(this.coordinates), this.defaultZoom);
 
     this.startZoomEventListener();
+    this.startMoveEventListener();
     this.insertNewMarkers();
 
     // Add marker to current position
@@ -46,7 +47,7 @@ export class MapComponent implements OnInit {
   }
 
   coordinateToPosition(cooridnate: Coordinates): [number, number] {
-    return [cooridnate.long, cooridnate.lat];
+    return [cooridnate.longitude, cooridnate.latitude];
   }
 
   private initializeMap() {
@@ -62,18 +63,64 @@ export class MapComponent implements OnInit {
     }).addTo(this.leafleatMap);
   }
 
+  private removeAllElementsFromMap() {
+    this.addElements.forEach(element => element.remove());
+  }
+
   private startZoomEventListener() {
     this.leafleatMap.on('zoomanim', event => {
       this.currentZoom = event.zoom
-      this.addElements.forEach(element => element.remove())
+      this.removeAllElementsFromMap();
       this.insertNewMarkers();
     });
   }
 
+  private startMoveEventListener() {
+    this.leafleatMap.on('moveend', e => {
+      var bounds = this.leafleatMap.getBounds()
+      let searchMap = {
+        northEast: {
+          longitude: bounds._northEast.lng,
+          latitude: bounds._northEast.lat
+        } as Coordinates,
+        southWest: {
+          latitude: bounds._southWest.lat,
+          longitude: bounds._southWest.lng
+        } as Coordinates
+      } as ScareMapSearch
+    });
+  }
+
+  private getCurrentSearchSpace(): ScareMapSearch {
+    var bounds = this.leafleatMap.getBounds()
+    let searchMap = {
+      northEast: {
+        longitude: bounds._northEast.lng,
+        latitude: bounds._northEast.lat
+      } as Coordinates,
+      southWest: {
+        latitude: bounds._southWest.lat,
+        longitude: bounds._southWest.lng
+      } as Coordinates
+    } as ScareMapSearch;
+    return searchMap;
+  }
+
   private insertNewMarkers() {
+
+    // this.scareMapService
+    //   .searchInScareMap(this.getCurrentSearchSpace())
+    //   .subscribe(evaluations => evaluations.forEach(evaluation => {
+    //     console.log(evaluation);
+    //     console.log(evaluation.coordinates.longitude);
+    //     this.addElements.push(this.generateMarker(evaluation));
+    //   }));
+
     this.scareMapService
       .getScareEvaluations()
       .subscribe(evaluations => evaluations.forEach(evaluation => {
+        console.log(evaluation);
+        console.log(evaluation.coordinates.longitude);
         this.addElements.push(this.generateMarker(evaluation));
       }));
   }
@@ -114,7 +161,7 @@ export class MapComponent implements OnInit {
 
     return {
       color: color,
-      radius: radius *  (evaluation.numberOfArticles / 60)
+      radius: radius * (evaluation.numberOfArticles * 3)
     } as ScareLevel;
   }
 }
